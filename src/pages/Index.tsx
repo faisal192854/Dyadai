@@ -5,20 +5,56 @@ import { Header } from '@/components/Header';
 import { CommunityCard } from '@/components/CommunityCard';
 import { Filters } from '@/components/Filters';
 import { Footer } from '@/components/Footer';
+import { SortBy } from '@/components/SortBy';
+import { CommunityPagination } from '@/components/CommunityPagination';
 import { communities as allCommunities } from '@/data/communities';
+
+const ITEMS_PER_PAGE = 8;
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortOption, setSortOption] = useState('rank');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredCommunities = allCommunities
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const sortedAndFilteredCommunities = allCommunities
     .filter(community => 
       selectedCategory === 'All' || community.category === selectedCategory
     )
     .filter(community =>
       community.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       community.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    )
+    .sort((a, b) => {
+      switch (sortOption) {
+        case 'members':
+          return b.members - a.members;
+        case 'price_asc': {
+          const priceA = a.price === 'Free' ? 0 : a.price;
+          const priceB = b.price === 'Free' ? 0 : b.price;
+          return priceA - priceB;
+        }
+        case 'price_desc': {
+          const priceADesc = a.price === 'Free' ? 0 : a.price;
+          const priceBDesc = b.price === 'Free' ? 0 : b.price;
+          return priceBDesc - priceADesc;
+        }
+        case 'rank':
+        default:
+          return a.rank - b.rank;
+      }
+    });
+
+  const totalPages = Math.ceil(sortedAndFilteredCommunities.length / ITEMS_PER_PAGE);
+  const paginatedCommunities = sortedAndFilteredCommunities.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="bg-gray-50 dark:bg-gray-950 min-h-screen">
@@ -38,19 +74,30 @@ const Index = () => {
             placeholder="Search for anything"
             className="pl-10"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page on search
+            }}
           />
         </div>
 
-        <Filters selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
+        <Filters selectedCategory={selectedCategory} onSelectCategory={handleSelectCategory} />
+
+        <div className="flex justify-end mb-4">
+          <SortBy value={sortOption} onChange={setSortOption} />
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredCommunities.map(community => (
+          {paginatedCommunities.map(community => (
             <CommunityCard key={community.id} community={community} />
           ))}
         </div>
         
-        {/* A pagination component could be added here in the future */}
+        <CommunityPagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </main>
       <Footer />
     </div>
