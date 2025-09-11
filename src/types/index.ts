@@ -1,7 +1,11 @@
-export interface Link {
+export interface Community {
   id: string;
-  url: string;
-  title: string;
-  shortUrl?: string;
-  createdAt: number;
+  rank: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  iconUrl: string;
+  members: number;
+  price: number | 'Free';
+  category: string;
 }
