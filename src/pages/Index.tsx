@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, Video, Volume2, Wand2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { CommunityCard } from '@/components/CommunityCard';
 import { Filters } from '@/components/Filters';
@@ -65,6 +68,48 @@ const Index = () => {
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             or <a href="#" className="text-blue-600 hover:underline">create your own</a>
           </p>
+        </div>
+
+        {/* AI Media Generator Feature Card */}
+        <div className="mb-8">
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border-blue-200 dark:border-blue-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wand2 className="h-6 w-6 text-blue-600" />
+                AI Media Generator
+              </CardTitle>
+              <CardDescription>
+                Transform images into videos and generate AI voices from text
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                    <Video className="h-8 w-8 text-blue-600" />
+                    <div>
+                      <p className="font-semibold">Image to Video</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Convert images to animated videos</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                    <Volume2 className="h-8 w-8 text-purple-600" />
+                    <div>
+                      <p className="font-semibold">Voice Generator</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Text to speech with AI voices</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <Link to="/media-generator">
+                    <Button size="lg" className="w-full sm:w-auto">
+                      Try Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="max-w-lg mx-auto mb-8 relative">
